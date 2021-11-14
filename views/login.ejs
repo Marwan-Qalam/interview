@@ -1,0 +1,25 @@
+<html lang="en">
+  <%- include('./partials/header.ejs'); %> 
+
+<body>
+  <%- include('./partials/nav.ejs'); %> 
+
+    <form class="container m-5" action="/auth/login" method="POST">
+        <div class="card-header">Login</div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    
+    <%- include('./partials/footer.ejs'); %> 
+</body>
+</html>
