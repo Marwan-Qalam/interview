@@ -18,7 +18,7 @@ exports.login = (req, res) => {
 
 
     db.query('SELECT email, password FROM users WHERE email = "' + email + '" AND password = "' + password + '" ',
-        (err, results, fields) => {
+        function(err, results, fields)   {
             if (err) throw err;
 
             if (results.length > 0) {

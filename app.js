@@ -4,6 +4,7 @@ const app = express();
 const dotenv = require('dotenv');
 const ejs = require('ejs');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 dotenv.config({
     path: './.env'
@@ -24,7 +25,7 @@ const db = mysql.createConnection({
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
-
+ 
 db.connect((err) => {
     if (err) {
         console.log(err)
