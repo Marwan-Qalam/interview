@@ -1,6 +1,7 @@
 
 const mysql = require("mysql");
 const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
 
 const db = mysql.createConnection({
     host: process.env.HOST,
@@ -10,22 +11,63 @@ const db = mysql.createConnection({
 });
 
 
+
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).render('login')
+        }
+
+        await db.query('SELECT * FROM users WHERE email = ?', [email],
+            async (err, results) => {
+                if (!results || !(await bcrypt.compare(password, results[0].password))) {
+                    res.status(401).render('login', console.log('incorrect'))
+                } else {
+                    const id = results[0].id;
+                    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                        expiresIn: process.env.JWT_EXPIRES
+                    });
+                    console.log("Token:" + token);
+
+                    const cookieOptions = {
+                        expires : new Date(
+                            Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+                        ),
+                        httpOnly:true
+                    }
+
+                    res.cookie('jwt',token,cookieOptions);
+                    res.status(200).redirect("/");
+                }
+            })
+
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+
 exports.register = (req, res) => {
     console.log(req.body)
 
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    const passwordConfirm = req.body.passwordConfirm; 
+    const passwordConfirm = req.body.passwordConfirm;
 
-   
+
 
     db.query('SELECT email FROM users WHERE email = ?',
         [email],
         async (error, results) => {
             if (error) {
                 console.log(error);
-            };         
+            };
 
             if (results.length > 0) {
                 return res.render('register',

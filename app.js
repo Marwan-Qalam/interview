@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 const ejs = require('ejs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+
 
 dotenv.config({
     path: './.env'
@@ -25,6 +27,7 @@ const db = mysql.createConnection({
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use(cookieParser());
  
 db.connect((err) => {
     if (err) {
